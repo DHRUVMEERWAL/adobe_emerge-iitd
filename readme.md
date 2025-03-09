@@ -17,7 +17,7 @@ This project leverages the Groq API to transform natural language queries into S
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/yourusername/sql-groq-api.git
+   git clone https://github.com/dhruvmeerwal/adobe_emerge-iitd
    cd sql-groq-api
    ```
 
