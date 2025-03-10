@@ -11,10 +11,14 @@ except FileNotFoundError:
 # Store test results
 test_results = []
 
-# Dummy function to check SQL format (doesn't execute)
 def validate_sql_syntax(query):
     keywords = ["SELECT", "FROM", "WHERE", "INSERT", "UPDATE", "DELETE", "JOIN"]
     return any(keyword in query.upper() for keyword in keywords)
+
+# Count statistics
+total_queries = len(generated_queries)
+success_count = 0
+error_count = 0
 
 # Process each generated query
 for i, entry in enumerate(generated_queries, start=1):
@@ -23,22 +27,31 @@ for i, entry in enumerate(generated_queries, start=1):
         entry["ExecutionStatus"] = "Error"
         entry["ErrorMessage"] = "Empty query string"
         test_results.append(entry)
+        error_count += 1
         continue
 
-    print(f"Validating query {i}/{len(generated_queries)}:\n{query}")
+    print(f"Validating query {i}/{total_queries}:\n{query}")
 
-    # Validate SQL syntax without running it
     if validate_sql_syntax(query):
         entry["ExecutionStatus"] = "Success"
         entry["Results"] = "Syntax check passed"
+        success_count += 1
     else:
         entry["ExecutionStatus"] = "Error"
         entry["ErrorMessage"] = "Invalid SQL syntax"
-
+        error_count += 1
+    
     test_results.append(entry)
+
+# Calculate scores
+accuracy = (success_count / total_queries) * 100 if total_queries > 0 else 0
 
 # Save test results
 with open("test_results.json", "w") as f:
     json.dump(test_results, f, indent=4)
 
-print("✅ Local testing complete! Results saved to test_results.json")
+print(f"✅ Testing complete! Results saved to test_results.json")
+print(f"🔹 Total Queries: {total_queries}")
+print(f"✅ Successful Queries: {success_count}")
+print(f"❌ Failed Queries: {error_count}")
+print(f"🎯 Accuracy: {accuracy:.2f}%")
